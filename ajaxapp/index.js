@@ -1,5 +1,13 @@
 function main() {
-  fetchUserInfo("js-primer-example");
+  fetchUserInfo("js-primer-example")
+    // fetchしたJSONオブジェクトで解決されたPromise（userInfo）を渡す
+    .then((userInfo) => createView(userInfo))
+    // HTML文字列で解決されたPromiseを渡す
+    .then((view) => displayView(view))
+    // Promiseチェーンの中で発生したエラーを受け取る
+    .catch((error)=> {
+      console.error(`エラーが発生しました：${error}`);
+    });
 }
 
 /**
@@ -70,21 +78,14 @@ function displayView(view) {
  * @param {string} userId 
  */
 function fetchUserInfo(userId) {
-  fetch(`https://api.github.com/users/${encodeURIComponent(userId)}`)
+  return fetch(`https://api.github.com/users/${encodeURIComponent(userId)}`)
     .then(response => {
       if (!response.ok) {
-        console.error("エラーレスポンス", response);
+        // エラーレスポンスからRejectedなPromiseを作成して返す
+        return Promise.reject(new Error(`${response.status}: ${response.statusText}`));
+        // console.error("エラーレスポンス", response);
       } else {
-        return response.json().then(userInfo => {
-            // HTMLの挿入
-            const result = document.getElementById('result');
-            result.innerHTML = createView(userInfo);
-            const view = createView(userInfo);
-            displayView(view);
-            
-        });
+        return response.json();
       }
-    }).catch(error => {
-      console.error(error);
     });
 }
