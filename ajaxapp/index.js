@@ -1,4 +1,6 @@
-console.log("index.js: loaded");
+function main() {
+  fetchUserInfo("js-primer-example");
+}
 
 /**
  * `特殊記号に対するエスケープ処理を行う`
@@ -37,6 +39,33 @@ function escapeHTML(strings, ...values) {
 }
 
 /**
+ * `HTML文字列を組み立てる`
+ * @param {Object} - fetchしたuserInfo
+ * @returns {string} - userInfoをHTMLに加工した文字列
+ */
+function createView(userInfo) {
+  return escapeHTML`
+    <h4>${userInfo.name} (@${userInfo.login})</h4>
+    <img src="${userInfo.avatar_url}" alt=$"${userInfo.login}" height="100">
+    <dl>
+      <dt>Location</dt>
+      <dd>${userInfo.location}</dd>
+      <dt>Repositories</dt>
+      <dd>${userInfo.public_repos}</dd>
+    </dl>
+  `;
+}
+
+/**
+ * `HTMLを画面に表示する`
+ * @param {string} view - HTMLに加工された文字列
+ */
+function displayView(view) {
+  const result = document.getElementById('result');
+  result.innerHTML = view;
+}
+
+/**
  * `GitHubからユーザー情報を取得する`
  * @param {string} userId 
  */
@@ -47,20 +76,12 @@ function fetchUserInfo(userId) {
         console.error("エラーレスポンス", response);
       } else {
         return response.json().then(userInfo => {
-          // HTMLの組み立て
-          const view = escapeHTML`
-            <h4>${userInfo.name} (@${userInfo.login})</h4>
-            <img src="${userInfo.avatar_url}" alt=$"${userInfo.login}" height="100">
-            <dl>
-              <dt>Location</dt>
-              <dd>${userInfo.location}</dd>
-              <dt>Repositories</dt>
-              <dd>${userInfo.public_repos}</dd>
-            </dl>
-          `;
-          // HTMLの挿入
-          const result = document.getElementById('result');
-          result.innerHTML = view;
+            // HTMLの挿入
+            const result = document.getElementById('result');
+            result.innerHTML = createView(userInfo);
+            const view = createView(userInfo);
+            displayView(view);
+            
         });
       }
     }).catch(error => {
