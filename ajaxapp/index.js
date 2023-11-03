@@ -1,6 +1,8 @@
 async function main() {
   try {
-    const userInfo = await fetchUserInfo("js-primer-example");
+    const userId = getUserId();
+    console.log(`${userId}`);
+    const userInfo = await fetchUserInfo(userId);
     const view = createView(userInfo);
     displayView(view);
   } catch(error) {
@@ -69,6 +71,14 @@ function createView(userInfo) {
 function displayView(view) {
   const result = document.getElementById('result');
   result.innerHTML = view;
+}
+
+/**
+ * `入力されたUserIdを返す`
+ * @returns {int} - userId
+ */
+function getUserId() {
+  return document.getElementById('userId').value;
 }
 
 /**
