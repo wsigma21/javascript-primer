@@ -67,7 +67,7 @@ export class App {
     const todoListElement = this.#todoListView.createElement(todoItems, {
       // Appに定義したリスナー関数を呼び出す
       onUpdateTodo: ({id, isCompleted}) => {
-          this.#handleUpdate({id, isComplated});
+          this.#handleUpdate({id, isCompleted});
       },
       onDeleteTodo: ({ id }) => {
         this.#handleDelete({ id });
